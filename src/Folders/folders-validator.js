@@ -1,26 +1,22 @@
-const { isWebUri } = require("valid-url");
+
 const logger = require("../logger");
+const foldersRouter = require("./folders-router");
 
 const NO_ERRORS = null;
+/*required in FOlder */
+/*required in NOTES */
 
-function getFolderValidationError({ url, rating }) {
-  if (rating && (!Number.isInteger(rating) || rating < 0 || rating > 5)) {
-    logger.error(`Invalid rating '${rating}' supplied`);
+
+function getFolderValidationError({ folder_name }) {
+  if (!folder_name) {
+    logger.error(`Invalid name'${folder_name}' supplied`);
     return {
       error: {
-        message: `'rating' must be a number between 0 and 5`,
+        message: `'folder_name' must be supplied.`,
       },
     };
   }
 
-  if (url && !isWebUri(url)) {
-    logger.error(`Invalid url '${url}' supplied`);
-    return {
-      error: {
-        message: `'url' must be a valid URL`,
-      },
-    };
-  }
 
   return NO_ERRORS;
 }

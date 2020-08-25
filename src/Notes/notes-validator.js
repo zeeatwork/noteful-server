@@ -2,12 +2,26 @@ const logger = require("../logger");
 
 const NO_ERRORS = null;
 
-function getBookmarkValidationError({ url, rating }) {
-  if (rating && (!Number.isInteger(rating) || rating < 0 || rating > 5)) {
-    logger.error(`Invalid rating '${rating}' supplied`);
+function getNoteValidationError({ note_title, note_details, parent_folder }) {
+  if (!note_title) {
+    logger.error(`Invalid name'${note_title}' supplied`);
     return {
       error: {
-        message: `'rating' must be a number between 0 and 5`,
+        message: `'note_title' must be supplied.`,
+      },
+    };
+  } else if (!note_details) {
+    logger.error(`Invalid name'${note_details}' supplied`);
+    return {
+      error: {
+        message: `'note_details' must be supplied.`,
+      },
+    };
+  } else if (!parent_folder) {
+    logger.error(`Invalid folder'${parent_folder}' supplied`);
+    return {
+      error: {
+        message: `'parent_folder' must be supplied.`,
       },
     };
   }
@@ -16,5 +30,5 @@ function getBookmarkValidationError({ url, rating }) {
 }
 
 module.exports = {
-  getBookmarkValidationError,
+  getNoteValidationError
 };
