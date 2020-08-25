@@ -8,7 +8,7 @@ const jsonParser = express.json();
 
 const serializeFolder = (folder) => ({
   id: folder.id,
-  folder_name: xss(folder.folder_name),
+  name: xss(folder.folder_name),
   date_published: folder.date_published,
 });
 
@@ -17,14 +17,14 @@ foldersRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     FoldersService.getAllFolders(knexInstance)
-      .then((users) => {
-        res.json(users.map(serializeUser));
+      .then((folders) => {
+        res.json(folders.map(serializeFolder));
       })
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { folder_name } = req.body;
-    const newFolder = { folder_name };
+    const { name } = req.body;
+    const newFolder = { folder_name: name };
 
     for (const [key, value] of Object.entries(newFolder)) {
       if (value == null) {
@@ -34,14 +34,14 @@ foldersRouter
       }
     }
 
-    newFolder.folder_name = folder_name;
-  
+    newFolder.folder_name = name;
+
     FoldersService.insertFolders(req.app.get("db"), newFolder)
       .then((folder) => {
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${folder.id}`))
-          .json(serializeUser(folder));
+          .json(serializeFolder(folder));
       })
       .catch(next);
   });
@@ -79,11 +79,15 @@ foldersRouter
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain 'folder_name'`
+          message: `Request body must contain 'folder_name'`,
         },
       });
 
-    FoldersService.updatefolder(req.app.get("db"), req.params.folder_id, folderToUpdate)
+    FoldersService.updatefolder(
+      req.app.get("db"),
+      req.params.folder_id,
+      folderToUpdate
+    )
       .then((numRowsAffected) => {
         res.status(204).end();
       })
