@@ -3,5 +3,5 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV || "development",
   API_TOKEN: process.env.API_TOKEN || "dummy-api-token",
   DB_URL:
-    process.env.DB_URL || "postgresql://zenzialin@localhost/noteful",
+    process.env.DATABASE_URL || "postgresql://zenzialin@localhost/noteful",
 };
